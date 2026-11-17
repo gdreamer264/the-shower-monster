@@ -39,9 +39,14 @@ nav { margin-top: 19px }
 }
 @media (prefers-reduced-motion: reduce) { .turn { animation: none } }
 </style>
+<link rel="stylesheet" href="story-navigation.css">
 </head>
 <body>
 <main>
+<nav class="story-navigation" aria-label="Choose a story">
+  <a href="./" aria-current="page">The Shower Monster</a>
+  <a href="snooze.html">Oliver and the Sleepy Snooze</a>
+</nav>
 <header><h1>The Shower Monster</h1><button id="read" type="button" aria-pressed="false">Read aloud</button></header>
 <article id="book" aria-label="Storybook spread">
   <figure><canvas id="art" role="img" width="762" height="335"></canvas></figure>

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5ede0">
+  <title>Oliver and the Sleepy Snooze</title>
+  <style>
+    :root {color-scheme:light;--paper:#f5ede0;--page:#fff9ee;--ink:#332c29;--muted:#67554b;--blue:#344c55;--edge:#d8c5af}
+    * {box-sizing:border-box}
+    body {margin:0;color:var(--ink);font-family:Georgia,serif;background:radial-gradient(ellipse at 82% 0%,#f4dcbc 0,transparent 37%),linear-gradient(125deg,#e4e7e5,var(--paper) 57%);min-height:100vh}
+    .wrap {width:min(1120px,calc(100% - 40px));margin:auto}
+    header {padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #92827555}
+    a {color:var(--blue);text-underline-offset:4px}
+    h1 {margin:27px 0 21px;font-size:clamp(2.1rem,5.2vw,4.25rem);line-height:1.04;letter-spacing:-.045em;font-weight:400}
+    .book {overflow:hidden;display:grid;grid-template-columns:60fr 40fr;align-items:stretch;background:var(--page);border-radius:14px;border:1px solid var(--edge);box-shadow:0 16px 46px #60472820}
+    .art {margin:0;align-self:center;background:#e8d9c6}
+    .art img {width:100%;max-height:650px;object-fit:contain;display:block}
+    article {padding:clamp(24px,4vw,52px);display:flex;flex-direction:column;justify-content:center;gap:14px;min-width:0}
+    h2 {font-size:clamp(1.55rem,3vw,2.45rem);margin:0 0 7px;letter-spacing:-.035em;font-weight:400}
+    .narration p {font-size:clamp(1.07rem,1.55vw,1.28rem);line-height:1.45;margin:0 0 .43em}
+    .narration p:last-child {margin-bottom:0}
+    button {border:1px solid #b9aa97;background:#fffbf3;color:var(--blue);font:650 .88rem system-ui,sans-serif;border-radius:999px;padding:10px 15px;min-height:44px;cursor:pointer}
+    button:hover:enabled {background:#f0e8db}
+    button:disabled {opacity:.45;cursor:default}
+    button:focus-visible,a:focus-visible {outline:3px solid #536b83;outline-offset:3px}
+    .next {color:white;background:var(--blue);border-color:var(--blue)}
+    .next:hover:enabled {background:#253a43}
+    .read {align-self:flex-start;margin-top:6px}
+    .turn {display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:16px 0 27px}
+    .turn button:first-child {justify-self:start}
+    .turn button:last-child {justify-self:end}
+    output {font:650 .86rem system-ui,sans-serif;color:var(--muted);white-space:nowrap}
+    @media(max-width:700px) {
+      .wrap {width:calc(100% - 26px)}
+      header {padding:14px 0}
+      h1 {margin:19px 0 17px}
+      .book {grid-template-columns:1fr}
+      .art img {max-height:390px}
+      article {padding:22px}
+      .read {margin-top:2px}
+    }
+  </style>
+  <link rel="stylesheet" href="story-navigation.css">
+</head>
+<body>
+  <div class="wrap">
+    <nav class="story-navigation" aria-label="Choose a story">
+  <a href="./">The Shower Monster</a>
+  <a href="snooze.html" aria-current="page">Oliver and the Sleepy Snooze</a>
+</nav>
+    <main>
+      <header class="snooze-header">
+        <h1>Oliver and the Sleepy Snooze</h1>
+        <button id="restart" type="button">Start over</button>
+      </header>
+      <div class="book">
+        <figure class="art"><img id="illustration" alt=""></figure>
+        <article aria-labelledby="scene" aria-live="polite">
+          <h2 id="scene"></h2>
+          <div class="narration" id="narration"></div>
+          <button class="read" id="read" type="button" hidden>Read aloud</button>
+        </article>
+      </div>
+      <nav class="turn" aria-label="Turn the page">
+        <button id="previous" type="button">← Back</button>
+        <output id="position" aria-live="polite"></output>
+        <button id="next" class="next" type="button">Next →</button>
+      </nav>
+    </main>
+  </div>
+  <script>
+    const pages = [{"title": "The alarm", "alt": "A brass alarm clock rings beside Oliver’s bed as a lump stirs under his patchwork quilt.", "text": ["When the alarm rang, something under Oliver’s blanket groaned.", "Oliver opened one eye.", "Two sleepy eyes looked back.", "“Don’t,” said the creature.", "“Don’t what?”", "“Whatever you’re thinking.”"], "image": "assets/snooze/alarm.webp"}, {"title": "Under the quilt", "alt": "Oliver lifts his quilt and finds a shaggy blue monster with two little brass bells.", "text": ["Oliver lifted the blanket. A shaggy blue monster lay across his feet. It had two brass bells on its head and both arms wrapped around his quilt.", "“Who are you?”", "“Snooze.”", "“Why are you in my bed?”", "Snooze rubbed his cheek against the pillow.", "“I think that’s fairly obvious.”"], "image": "assets/snooze/under-the-quilt.webp"}, {"title": "Five more minutes", "alt": "Oliver sits on the edge of his bed while Snooze holds tight to the quilt.", "text": ["“Oliver!” Dad called. “Time to get up!”", "Oliver started to sit up.", "Snooze gently pulled the quilt to his chin.", "“Five more minutes.”", "Oliver settled back down.", "Five minutes later, Dad called again.", "Oliver stretched one leg toward the edge.", "Snooze tucked it back in.", "“You’ll need that,” he whispered. “For sleeping.”", "“I have to get dressed.”", "“An excellent idea.” Snooze yawned. “You should rest first.”"], "image": "assets/snooze/five-more-minutes.webp"}, {"title": "Warm and cold", "alt": "Snooze’s blue fur and brass bells peek out from the warm quilt while Oliver’s feet hang near the floor.", "text": ["Oliver looked at the clock.", "He was going to be late.", "He pushed the quilt down.", "Snooze pulled it up.", "Oliver pushed.", "Snooze pulled.", "“Why do you want me to stay here?” Oliver asked.", "Snooze stared at him.", "Then he lifted a corner of the quilt.", "“Feel.”", "Oliver slid his hand underneath.", "Warm.", "He touched the floor.", "Cold.", "“See?” said Snooze."], "image": "assets/snooze/warm-and-cold.webp"}, {"title": "The slippers", "alt": "A shaggy blue paw nudges Oliver’s bunny slippers toward his bare feet.", "text": ["Oliver did see.", "But his clothes were on the chair. His breakfast was downstairs. And today he had promised to help feed the classroom guinea pig.", "“I want to stay cozy,” Oliver said. “But I want to get up, too.”", "Snooze frowned. This sounded complicated.", "Oliver looked at the monster’s enormous furry feet.", "“Can you find my slippers?”", "Snooze reached over the side of the bed without uncovering a single toe. He found one slipper, a toy truck, and finally the other slipper.", "Oliver put them on.", "Then he stood up."], "image": "assets/snooze/slippers.webp"}, {"title": "The whole morning", "alt": "Oliver opens the blue curtains and sunlight falls across the bedroom.", "text": ["Snooze gasped and clutched the quilt.", "“Well,” he said. “There he goes.”", "Oliver pulled on his clothes.", "Snooze watched from the pillow.", "“Still time to come back.”", "Oliver opened the curtains.", "Snooze covered his eyes.", "“Now you’ve let the whole morning in.”"], "image": "assets/snooze/morning-light.webp"}, {"title": "Coming?", "alt": "Snooze follows Oliver down a sunlit hallway with the patchwork quilt around his shoulders.", "text": ["At the door, Oliver turned.", "“Coming?”", "Snooze glanced at the warm bed.", "Then at Oliver.", "“Can I bring the quilt?”"], "image": "assets/snooze/downstairs.webp"}, {"title": "Toast", "alt": "Oliver and Snooze eat breakfast with Dad. Snooze is still wrapped in the quilt.", "text": ["At breakfast, Dad put down two pieces of toast.", "Oliver sat in his usual chair.", "Beside him sat a small mountain of quilt.", "A blue hand emerged.", "It took a piece of toast.", "“Tomorrow,” said Snooze, “five more minutes. Then toast.”"], "image": "assets/snooze/toast.webp"}];
+    const elements = Object.fromEntries(
+      ['illustration', 'scene', 'narration', 'read', 'previous', 'next', 'position', 'restart']
+        .map(id => [id, document.getElementById(id)])
+    );
+    const speech = window.speechSynthesis;
+    let current = 0;
+    let activeSpeech;
+
+    function stopReading() {
+      if (!activeSpeech) return;
+      activeSpeech = undefined;
+      speech.cancel();
+      elements.read.textContent = 'Read aloud';
+    }
+
+    function show(index) {
+      if (index < 0 || index >= pages.length) return;
+      stopReading();
+      current = index;
+      const page = pages[current];
+      elements.illustration.src = page.image;
+      elements.illustration.alt = page.alt;
+      elements.illustration.style.objectPosition = page.position || 'center';
+      elements.scene.textContent = page.title;
+      elements.narration.replaceChildren(...page.text.map(line => {
+        const paragraph = document.createElement('p');
+        paragraph.textContent = line;
+        return paragraph;
+      }));
+      elements.position.textContent = 'Page ' + (current + 1) + ' of ' + pages.length;
+      elements.previous.disabled = current === 0;
+      elements.next.disabled = current === pages.length - 1;
+      const followingPage = pages[current + 1];
+      if (followingPage) new Image().src = followingPage.image;
+    }
+
+    if (speech && window.SpeechSynthesisUtterance) {
+      elements.read.hidden = false;
+      elements.read.addEventListener('click', () => {
+        if (activeSpeech) return stopReading();
+        const reading = new SpeechSynthesisUtterance(pages[current].text.join(' '));
+        reading.lang = 'en-US';
+        reading.rate = 0.87;
+        reading.onend = reading.onerror = () => {
+          if (activeSpeech !== reading) return;
+          activeSpeech = undefined;
+          elements.read.textContent = 'Read aloud';
+        };
+        activeSpeech = reading;
+        elements.read.textContent = 'Stop reading';
+        speech.speak(reading);
+      });
+    }
+    elements.previous.addEventListener('click', () => show(current - 1));
+    elements.next.addEventListener('click', () => show(current + 1));
+    elements.restart.addEventListener('click', () => show(0));
+    document.addEventListener('keydown', event => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented) return;
+      if (event.key === 'ArrowLeft') show(current - 1);
+      if (event.key === 'ArrowRight') show(current + 1);
+    });
+    window.addEventListener('pagehide', stopReading);
+    show(0);
+  </script>
+</body>
+</html>

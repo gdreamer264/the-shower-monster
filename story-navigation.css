@@ -1,0 +1,28 @@
+.story-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 3px 18px;
+  margin: 0 0 16px;
+  border-bottom: 1px solid #bcb2a1;
+  color: #544b43;
+  font: 600 14px/1.35 system-ui, sans-serif;
+}
+.story-navigation a {
+  color: inherit;
+  padding: 10px 0 9px;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+}
+.story-navigation a:hover { text-decoration: underline; text-underline-offset: 3px }
+.story-navigation a[aria-current="page"] { color: #2c2823; border-bottom-color: #745980 }
+.story-navigation a:focus-visible { outline: 3px solid #62436e; outline-offset: 3px }
+.snooze-header { border: 0; padding: 0 0 18px }
+.snooze-header h1 { margin: 0; font-size: clamp(24px, 3vw, 34px) }
+.snooze-header button { flex-shrink: 0 }
+.wrap:has(.story-navigation) { padding-top: 25px }
+@media (max-width: 760px) {
+  .wrap:has(.story-navigation) { padding-top: 14px }
+  .story-navigation { margin-bottom: 12px }
+}
