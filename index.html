@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Shower Monster</title>
+<style>
+* { box-sizing: border-box }
+body { margin: 0; color: #2c2823; background: #e3ded2; font: 16px system-ui, sans-serif }
+main { width: min(1250px, calc(100% - 64px)); margin: auto; padding: 25px 0 34px }
+header, nav { display: flex; align-items: center; justify-content: space-between; gap: 14px }
+header { margin-bottom: 18px }
+h1 { margin: 0; font: 400 clamp(24px, 3vw, 34px)/1.05 Georgia, serif; letter-spacing: -.04em }
+button { color: inherit; background: transparent; border: 1px solid #777064; border-radius: 3px; font: 600 14px system-ui; padding: 9px 14px; min-height: 44px; cursor: pointer }
+button:hover:not(:disabled) { background: #d5cbbb }
+button:focus-visible { outline: 3px solid #62436e; outline-offset: 3px }
+button:disabled { opacity: .45; cursor: default }
+#read { white-space: nowrap }
+article { display: grid; grid-template-columns: 1.42fr 1fr; background: #fcf7eb; box-shadow: 0 15px 40px #37272a2e; border: 1px solid #bcb2a1; min-width: 0 }
+figure { margin: 0; min-width: 0; background: #5c5055; display: grid; place-items: center; align-self: stretch }
+canvas { width: 100%; height: auto; display: block }
+.paper { position: relative; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: clamp(25px, 5vw, 72px); background: linear-gradient(90deg, #5f473a23, transparent 17px), #fcf7eb }
+p { margin: 0 }
+#verse { white-space: pre-line; font: clamp(18px, 2vw, 28px)/1.56 Georgia, serif; text-wrap: pretty }
+#ending { margin-top: 24px; font: 700 11px/1.4 system-ui; letter-spacing: .1em }
+#fight { margin-top: 16px }
+nav { margin-top: 19px }
+#folio { font: 17px Georgia, serif; color: #544b43; font-variant-numeric: lining-nums }
+#status { text-align: center; margin-top: 12px; min-height: 1.4em; font-size: 14px }
+.turn { animation: turn .24s ease-out }
+@keyframes turn { from { opacity: .64 } }
+@media (max-width: 760px) {
+  main { width: min(575px, calc(100% - 24px)); padding-top: 14px }
+  header { margin-bottom: 12px }
+  article { grid-template-columns: 1fr }
+  .paper { background: #fcf7eb; padding: 24px 20px 28px }
+  #verse { font-size: clamp(17px, 4.6vw, 23px) }
+  nav { margin-top: 13px }
+}
+@media (prefers-reduced-motion: reduce) { .turn { animation: none } }
+</style>
+</head>
+<body>
+<main>
+<header><h1>The Shower Monster</h1><button id="read" type="button" aria-pressed="false">Read aloud</button></header>
+<article id="book" aria-label="Storybook spread">
+  <figure><canvas id="art" role="img" width="762" height="335"></canvas></figure>
+  <section class="paper" aria-label="Story text">
+    <p id="verse"></p>
+    <p id="ending" hidden>THE END... UNTIL THE NEXT SHOWER!</p>
+    <button id="fight" type="button" hidden>Fight the Monster!</button>
+  </section>
+</article>
+<nav aria-label="Turn pages">
+  <button id="prev" type="button">← Previous</button>
+  <span id="folio"></span>
+  <button id="next" type="button">Next →</button>
+</nav>
+<p id="status" role="status"></p>
+</main>
+<script>
+const verses = ["In a bathroom, by the door,\nLived a monster on the floor.\nPurple fur and tiny toes,\nTwo small horns above his nose.\nHe wasn't mean. He didn't bite.\nHe just made shower time a fight!","\"Not yet!\" the little monster cried.\n\"There's lots of stuff to do outside!\nYou've got a game! You've got a snack!\nThat shower's waiting. Just come back!\"","He'd offer books and comfy chairs,\nAnd twenty-seven teddy bears.\nHe'd whisper, \"Wouldn't it be nice\nTo watch your favorite show... twice?\"","But then one day, a hero said,\n\"I'll take a shower before bed!\"\nThe monster gasped. \"You can't! You mustn't!\nI'm quite convinced you really shouldn't!\"","He spread his paws across the floor.\nHe planted himself before the door.\n\"You're much too busy! Stay with me!\nThere's nowhere else you need to be!\"","The hero took a little stride.\nThe monster shuffled to one side.\nAnother step. A mighty leap!\nThe monster gave a frightened squeak.","The water splashed. The bubbles flew.\nThe monster cried, \"Oh, what to do?!\"\nFor once the shower had begun,\nThe monster knew the fight was done.","The water felt so warm and nice.\nThe hero stayed in twice as long!\nThe monster sat outside the door,\nAnd wondered what he'd fought it for.","\"Come out!\" the little monster said.\n\"It's getting late! It's time for bed!\"\nBut now the hero wouldn't go.\n\"Five more minutes!\" came the \"No!\"","The purple monster scratched his head.\n\"Perhaps I'll guard the bathtub instead.\nGetting in is hard, it's true...\nBut getting OUT is tricky too!\"","The towels dried. The bathroom gleamed.\nThe little monster yawned and dreamed.\nHe curled up softly by the door,\nPrepared to battle once more.","And in the morning, right on cue,\nHe had a brand-new job to do.\n\"Not yet!\" he cried. \"It's much too soon!\"\nAnd so began another round."];
+const descriptions = [
+ 'A shaggy purple monster crouches beside the bathroom door.',
+ 'The monster tempts a child with a game controller and a snack.',
+ 'The monster stacks books among a heap of teddy bears.',
+ 'A child in pajamas carries a towel toward the shower. The monster gasps.',
+ 'The monster plants both paws in front of the door.',
+ 'The child strides ahead while the monster scrambles aside.',
+ 'Bubbles fly from the shower and the monster jumps back.',
+ 'Steam curls out of the shower while the monster sits and thinks.',
+ 'The monster points to a clock outside the shower.',
+ 'The monster scratches his head beside the walk-in shower.',
+ 'The monster sleeps curled up beside the door in moonlight.',
+ 'The monster rushes to meet the boy in his dinosaur pajamas again in the morning.'
+];
+const el = id => document.getElementById(id);
+const canvas = el('art');
+const ctx = canvas.getContext('2d');
+const speech = window.speechSynthesis;
+const read = el('read');
+let page = 0;
+let narration = null;
+const sheets = ['story-pages-01-06.png', 'story-pages-07-12.png'].map(src => {
+ const image = new Image();
+ image.addEventListener('load', paint);
+ image.addEventListener('error', paint);
+ image.src = src;
+ return image;
+});
+function paint() {
+ canvas.setAttribute('aria-label', descriptions[page]);
+ const image = sheets[Math.floor(page / 6)];
+ if (!image?.naturalWidth) {
+   ctx.clearRect(0, 0, canvas.width, canvas.height);
+   if (image?.complete) {
+     ctx.fillStyle = '#fff7ea';
+     ctx.font = '23px Georgia';
+     ctx.textAlign = 'center';
+     ctx.fillText('Illustration unavailable', canvas.width / 2, canvas.height / 2);
+   }
+   return;
+ }
+ const cell = page % 6;
+ const width = image.naturalWidth / 2;
+ const height = image.naturalHeight / 3;
+ const inset = 3;
+ canvas.width = Math.floor(width) - inset * 2;
+ canvas.height = Math.floor(height) - inset * 2;
+ ctx.drawImage(image, cell % 2 * width + inset, Math.floor(cell / 2) * height + inset,
+   canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+}
+function stopReading() {
+ if (narration) {
+   narration = null;
+   speech.cancel();
+ }
+ read.textContent = 'Read aloud';
+ read.setAttribute('aria-pressed', 'false');
+}
+function render(announce = false) {
+ stopReading();
+ const last = page === verses.length - 1;
+ el('verse').textContent = verses[page];
+ el('ending').hidden = !last;
+ el('fight').hidden = !last;
+ el('fight').textContent = 'Fight the Monster!';
+ el('prev').disabled = page === 0;
+ el('next').textContent = last ? 'Start over ↻' : 'Next →';
+ el('folio').textContent = (page + 1) + ' / ' + verses.length;
+ el('status').textContent = '';
+ if (announce) el('status').textContent = 'Page ' + (page + 1) + ' of ' + verses.length;
+ paint();
+ const book = el('book');
+ book.classList.remove('turn');
+ requestAnimationFrame(() => book.classList.add('turn'));
+}
+function turn(step) {
+ if (page + step < 0) return;
+ page = (page + step) % verses.length;
+ render(true);
+}
+el('prev').onclick = () => turn(-1);
+el('next').onclick = () => turn(1);
+document.addEventListener('keydown', event => {
+ if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+ if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+ event.preventDefault();
+ turn(event.key === 'ArrowLeft' ? -1 : 1);
+});
+read.disabled = !(speech && window.SpeechSynthesisUtterance);
+read.onclick = () => {
+ if (narration) { stopReading(); return }
+ const ending = page === verses.length - 1 ? ' The end, until the next shower!' : '';
+ const current = new SpeechSynthesisUtterance(verses[page] + ending);
+ current.lang = 'en-US';
+ current.rate = .86;
+ narration = current;
+ read.textContent = 'Stop reading';
+ read.setAttribute('aria-pressed', 'true');
+ current.onend = () => { if (narration === current) stopReading() };
+ current.onerror = () => {
+   if (narration !== current) return;
+   stopReading();
+   el('status').textContent = 'Read-aloud is unavailable on this device.';
+ };
+ speech.speak(current);
+};
+el('fight').onclick = () => {
+ if (el('fight').textContent === 'Read again') { turn(1); return }
+ el('fight').textContent = 'Read again';
+ el('status').textContent = 'The Shower Monster has been defeated! Until tomorrow…';
+};
+window.addEventListener('pagehide', stopReading);
+render();
+</script>
+</body>
+</html>
